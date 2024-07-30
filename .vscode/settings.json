@@ -1,0 +1,9 @@
+{
+    "ansible.python.interpreterPath": "/home/marcopalmieri/code/ansible/venv-ansible-panos/bin/python3.9",
+    "yaml.schemas": {
+        "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/playbook": [
+            "file:///home/marcopalmieri/code/ansible/lab-panos/test/get-security-rules.yml",
+            "file:///home/marcopalmieri/code/ansible/lab-panos/test/get-system-info.yml"
+        ]
+    }
+}

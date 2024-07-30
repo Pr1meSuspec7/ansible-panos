@@ -1,0 +1,63 @@
+# To avoid object configuration comment entire section
+# Example:
+# address_object:
+#   - object_name: cloudflare_dns
+#     device_group: pan-lab
+#     object_value: "1.1.1.1"
+
+address_object:
+  - device_group: pan-lab
+    object_name: cloudflare_dns
+    object_type: ip-netmask
+    object_value: "1.1.1.1"
+  - device_group: pan-lab
+    object_name: 0.it.pool.ntp.org
+    object_type: fqdn
+    object_value: 0.it.pool.ntp.org
+  - device_group: pan-lab
+    object_name: 1.it.pool.ntp.org
+    object_type: fqdn
+    object_value: 1.it.pool.ntp.org
+  - device_group: pan-lab
+    object_name: 2.it.pool.ntp.org
+    object_type: fqdn
+    object_value: 2.it.pool.ntp.org
+  - device_group: pan-lab
+    object_name: 3.it.pool.ntp.org
+    object_type: fqdn
+    object_value: 3.it.pool.ntp.org
+
+address_group:
+  - device_group: pan-lab
+    group_name: it.pool.ntp.org
+    static_value: ["0.it.pool.ntp.org","1.it.pool.ntp.org",
+                   "2.it.pool.ntp.org", "3.it.pool.ntp.org"]
+
+service_object:
+  - device_group: pan-lab
+    service_name: udp-53
+    service_proto: udp
+    service_port: "53"
+
+security_rules:
+  - device_group: pan-lab
+    rule_name: cloudflare_dns
+    src_zone: ["CC-VLAN", "SEC-84"]
+    src_ip: ["any"]
+    dst_zone: ["untrust"]
+    dst_ip: ["cloudflare_dns"]
+    app: ["dns"]
+    service: ["application-default"]
+    action: allow
+  - device_group: pan-lab
+    rule_name: ntp
+    src_zone: ["CC-VLAN", "SEC-84"]
+    src_ip: ["any"]
+    dst_zone: ["untrust"]
+    dst_ip: ["it.pool.ntp.org"]
+    app: ["ntp"]
+    service: ["application-default"]
+    action: allow
+
+commit_push:
+  - device_group: pan-lab

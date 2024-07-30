@@ -1,0 +1,66 @@
+---
+- name: DELETE OBJECTS AND RULES
+  hosts: panorama
+  connection: local
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+  vars_files:
+    - data.yml
+
+
+  tasks:
+    - name: WARNING
+      ansible.builtin.pause:
+        prompt: |
+          ############################################
+          This playbook will delete all the
+          configurations in the data.yml file.
+          ############################################
+          Are you sure?
+          - Press ENTER to abort
+          - Type YES|yes to continue
+      register: warning
+
+    - name: Abort
+      ansible.builtin.meta: end_play
+      when: warning.user_input != "YES" and warning.user_input != "yes"
+
+    - name: Delete security rule
+      paloaltonetworks.panos.panos_security_rule:
+        provider: "{{ device }}"
+        device_group: "{{ item.device_group }}"
+        rule_name: "{{ item.rule_name }}"
+        state: absent
+      loop: "{{ security_rules }}"
+      when: security_rules is defined
+
+    - name: Delete address groups
+      paloaltonetworks.panos.panos_address_group:
+        provider: "{{ device }}"
+        device_group: "{{ item.device_group }}"
+        name: "{{ item.group_name }}"
+        state: absent
+      loop: "{{ address_group }}"
+      when: address_group is defined
+
+    - name: Delete address object
+      paloaltonetworks.panos.panos_address_object:
+        provider: "{{ device }}"
+        device_group: "{{ item.device_group }}"
+        name: "{{ item.object_name }}"
+        state: absent
+      loop: "{{ address_object }}"
+      when: address_object is defined
+
+    - name: Delete service object
+      paloaltonetworks.panos.panos_service_object:
+        provider: "{{ device }}"
+        device_group: "{{ item.device_group }}"
+        name: "{{ item.service_name }}"
+        state: absent
+      loop: "{{ service_object }}"
+      when: service_object is defined

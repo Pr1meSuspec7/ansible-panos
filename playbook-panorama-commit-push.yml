@@ -1,0 +1,42 @@
+---
+- name: Commit and Push with Panorama
+  hosts: panorama
+  connection: local
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+  vars_files:
+    - data.yml
+
+
+  tasks:
+    - name: Commit candidate configuration
+      paloaltonetworks.panos.panos_commit_panorama:
+        provider: "{{ device }}"
+      register: results
+
+    - name: Commit output
+      ansible.builtin.debug:
+        msg: "Commit with job ID: {{ results.jobid }} had output: {{ results.details }}"
+      when: results.jobid is defined
+
+    - name: Commit and Push template configuration
+      paloaltonetworks.panos.panos_commit_push:
+        provider: "{{ device }}"
+        style: "device group"
+        name: "{{ item.device_group }}"
+        include_template: false
+        sync: false
+      register: results
+      loop: "{{ commit_push }}"
+
+    - name: Push output
+      ansible.builtin.debug:
+        # var: results
+        msg: "Push with job ID: {{ item.jobid }} on {{ item.item }}"
+      loop: "{{ results.results }}"
+      loop_control:
+        label: "{{ item.item }}"

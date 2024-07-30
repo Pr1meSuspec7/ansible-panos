@@ -1,0 +1,58 @@
+---
+- name: CREATE OBJECTS AND RULES
+  hosts: panorama
+  connection: local
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+  vars_files:
+    - data.yml
+
+
+  tasks:
+    - name: Create address object
+      paloaltonetworks.panos.panos_address_object:
+        provider: "{{ device }}"
+        device_group: "{{ item.device_group }}"
+        name: "{{ item.object_name }}"
+        address_type: "{{ item.object_type }}"
+        value: "{{ item.object_value }}"
+      loop: "{{ address_object }}"
+      when: address_object is defined
+
+    - name: Create address groups
+      paloaltonetworks.panos.panos_address_group:
+        provider: "{{ device }}"
+        device_group: "{{ item.device_group }}"
+        name: "{{ item.group_name }}"
+        static_value: "{{ item.static_value }}"
+      loop: "{{ address_group }}"
+      when: address_group is defined
+
+    - name: Create service object
+      paloaltonetworks.panos.panos_service_object:
+        provider: "{{ device }}"
+        device_group: "{{ item.device_group }}"
+        name: "{{ item.service_name }}"
+        protocol: "{{ item.service_proto }}"
+        destination_port: "{{ item.service_port }}"
+      loop: "{{ service_object }}"
+      when: service_object is defined
+
+    - name: Add security rule
+      paloaltonetworks.panos.panos_security_rule:
+        provider: "{{ device }}"
+        device_group: "{{ item.device_group }}"
+        rule_name: "{{ item.rule_name }}"
+        source_zone: "{{ item.src_zone }}"
+        source_ip: "{{ item.src_ip }}"
+        destination_zone: "{{ item.dst_zone }}"
+        destination_ip: "{{ item.dst_ip }}"
+        application: "{{ item.app }}"
+        service: "{{ item.service }}"
+        action: "{{ item.action }}"
+      loop: "{{ security_rules }}"
+      when: security_rules is defined

@@ -1,0 +1,36 @@
+---
+- name: Gather security rules
+  hosts: panorama
+  connection: local
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+
+
+  tasks:
+    - name: Retrieve address group object
+      paloaltonetworks.panos.panos_address_object:
+        provider: '{{ device }}'
+        # device_group required to query panorama
+        device_group: pan-lab
+        gathered_filter: "*"
+        state: gathered
+      register: object_address
+
+    - name: Output
+      ansible.builtin.debug:
+        msg: "{{ object_address }}"
+
+    - name: Get all security rules
+      paloaltonetworks.panos.panos_security_rule:
+        provider: "{{ device }}"
+        device_group: pan-lab
+        gathered_filter: "*"
+        state: gathered
+      register: sec_rules
+
+    - name: Output
+      ansible.builtin.debug:
+        msg: "{{ sec_rules }}"
