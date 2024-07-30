@@ -87,7 +87,8 @@ $ ansible-playbook playbook-panorama-commit-push.yml
 ```
 
 # References
-[Ansible for PAN-OS](https://pan.dev/ansible/docs/panos/)
+[Ansible for PAN-OS](https://pan.dev/ansible/docs/panos/)  
+[Ansible-galaxy Collection paloaltonetworks.panos](https://galaxy.ansible.com/ui/repo/published/paloaltonetworks/panos/)
 
 # MIT License
 Feel free to edit, improve and share.
