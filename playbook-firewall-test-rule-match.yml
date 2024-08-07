@@ -17,7 +17,9 @@
         provider: '{{ device }}'
         vsys: "{{ item.vsys | default(omit) }}"
         source_ip: "{{ item.source_ip }}"
+        source_zone: "{{ item.source_zone | default(omit) }}"
         destination_ip: "{{ item.destination_ip }}"
+        destination_zone: "{{ item.destination_zone | default(omit) }}"
         application: "{{ item.application }}"
         destination_port: "{{ item.destination_port }}"
         protocol: "{{ item.protocol }}"
@@ -29,4 +31,4 @@
         msg: "{{ item.rule }}"
       loop: "{{ result.results }}"
       loop_control:
-        label: "{{ item.rule }}"
+        label: "{{ item.rule.name }}"

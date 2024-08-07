@@ -5,7 +5,9 @@ flow_to_match:
     destination_port: 53
     protocol: 17
   - source_ip: 10.0.0.100
+    source_zone: CC-VLAN
     destination_ip: 95.230.240.5
+    destination_zone: untrust
     application: ntp-base
     destination_port: 123
     protocol: 17
