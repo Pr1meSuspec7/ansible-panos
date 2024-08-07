@@ -1,6 +1,6 @@
 address_object:
   - device_group: pan-lab
-    object_name: cloudflare_dns
+    object_name: cloudflare_dns_1
     object_type: ip-netmask
     object_value: "1.1.1.1"
   - device_group: pan-lab
