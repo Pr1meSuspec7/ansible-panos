@@ -1,0 +1,32 @@
+---
+- name: TEST SECURITY RULE MATCH
+  hosts: firewall
+  connection: local
+  vars:
+    device:
+      ip_address: "{{ ip_address }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password | default(omit) }}"
+      api_key: "{{ api_key | default(omit) }}"
+  vars_files:
+    - flow-to-match.yml
+
+  tasks:
+    - name: Check security rules
+      paloaltonetworks.panos.panos_match_rule:
+        provider: '{{ device }}'
+        vsys: "{{ item.vsys | default(omit) }}"
+        source_ip: "{{ item.source_ip }}"
+        destination_ip: "{{ item.destination_ip }}"
+        application: "{{ item.application }}"
+        destination_port: "{{ item.destination_port }}"
+        protocol: "{{ item.protocol }}"
+      register: result
+      loop: "{{ flow_to_match }}"
+
+    - name: Commit output
+      ansible.builtin.debug:
+        msg: "{{ item.rule }}"
+      loop: "{{ result.results }}"
+      loop_control:
+        label: "{{ item.rule }}"

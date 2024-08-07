@@ -1,0 +1,11 @@
+flow_to_match:
+  - source_ip: 10.0.0.100
+    destination_ip: 8.8.8.8
+    application: dns-base
+    destination_port: 53
+    protocol: 17
+  - source_ip: 10.0.0.100
+    destination_ip: 95.230.240.5
+    application: ntp-base
+    destination_port: 123
+    protocol: 17
